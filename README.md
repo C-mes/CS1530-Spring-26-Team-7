@@ -32,6 +32,8 @@ Sprint 4: Skeleton code for FridgeApp.
 5. Run
     - `python3 backend/app.py`
 
+**NOTE**: No input sanitization currently. Easy to do SQL injections
+
 ### Frontend (React):
 1. IN NEW TERMINAL - from root: `cd frontend`
 2. **FIRST TIME ONLY:** Install dependencies
