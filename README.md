@@ -1,6 +1,8 @@
 # Fridge App (Name TBD)
 ## CS 1530 - Spring 2026
 
+Sprint 4: Skeleton code for FridgeApp.
+
 ### Team 7:
 - YanJia Chen
 - Nick Hoffman
