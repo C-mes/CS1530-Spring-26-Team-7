@@ -24,9 +24,11 @@
     - Windows: `.\venv\Scripts\activate`
     - Mac/Linux: `source venv/bin/activate`
 4. Install dependencies
-    - `pip install flask flask-cors flask-sqlalchemy`
+    - `pip3 install flask`
+5. ** IF inventory.db IS MISSING ** Initialize database
+    - `python3 backend/createdb.py`
 5. Run
-    - `python app.py`
+    - `python3 backend/app.py`
 
 ### Frontend (React):
 1. IN NEW TERMINAL - from root: `cd frontend`
