@@ -52,7 +52,7 @@ def create_item():
 
 
 @app.route('/items/<int:id>', methods=['PUT'])
-def update_user(id):
+def update_items(id):
     data = request.get_json()
 
     name = data.get('name')
@@ -62,12 +62,12 @@ def update_user(id):
     conn = db_conn()
     cursor = conn.cursor()
 
-    user = cursor.execute(
+    item = cursor.execute(
         'SELECT * FROM inventory WHERE id = ?',
         (id,)
     ).fetchone()
 
-    if user is None:
+    if item is None:
         conn.close()
         return jsonify({'error': 'Item not found'}), 404
 
@@ -82,7 +82,7 @@ def update_user(id):
 
     return jsonify({'message': 'item updated'})
 
-@app.route('/users/<int:id>', methods=['DELETE'])
+@app.route('/items/<int:id>', methods=['DELETE'])
 def delete_item(id):
     conn = db_conn()
     cursor = conn.cursor()
