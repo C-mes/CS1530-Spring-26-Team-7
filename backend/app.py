@@ -3,7 +3,7 @@
 
 import sqlite3
 from flask import Flask, jsonify, request
-from datetime import date
+from datetime import date, timedelta
 
 app = Flask(__name__)
 
@@ -22,7 +22,7 @@ def index():
 def get_items():
     conn = db_conn()
     items = conn.execute('SELECT * FROM inventory').fetchall()
-    conn.close
+    conn.close()
     return jsonify([dict(item) for item in items])
     
 @app.route('/items', methods=['POST'])
