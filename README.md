@@ -26,7 +26,7 @@ Sprint 4: Skeleton code for FridgeApp.
     - Windows: `.\venv\Scripts\activate`
     - Mac/Linux: `source venv/bin/activate`
 4. Install dependencies
-    - `pip3 install flask`
+    - `pip3 install flask flask-cors`
 5. **IF inventory.db IS MISSING** Initialize database
     - `python3 backend/createdb.py`
 5. Run
