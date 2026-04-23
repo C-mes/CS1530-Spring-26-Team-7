@@ -21,6 +21,14 @@ export default function AddItem({ onAdded }) {
   // Handles form submission: POSTs the form data as JSON, then updates UI.
   const submit = async (e) => {
     e.preventDefault(); // prevent browser's default full-page reload on submit
+
+    //validate the is today or later before submitting
+    const today = new Date().toISOString().split('T')[0]; 
+    if (form.exp && form.exp < today) {
+      setStatus({ type: 'err', msg: 'Expiration date cannot be in the past' });
+      return; 
+    }
+
     setSubmitting(true);
     setStatus(null);
     try {
