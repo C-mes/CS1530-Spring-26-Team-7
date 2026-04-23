@@ -36,6 +36,35 @@ main {
 }
 
 .item-list li {
-  padding: 0.5rem 0;
+  padding: 0.5rem;
   border-bottom: 1px solid #eee;
+  border-left: 4px solid transparent;
+}
+
+.item-list li.item-warning {
+  background: #fff7e0;
+  border-left-color: #e0a800;
+  color: #6a4b00;
+}
+
+.item-list li.item-alert {
+  background: #fde2e2;
+  border-left-color: #c62828;
+  color: #8a1f1f;
+}
+
+.exp-badge {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.item-list li.item-warning .exp-badge {
+  color: #a46a00;
+}
+
+.item-list li.item-alert .exp-badge {
+  color: #b71c1c;
 }

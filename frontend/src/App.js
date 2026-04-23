@@ -5,6 +5,39 @@ import { useEffect, useState } from 'react';
 import AddItem from './AddItem';
 import './App.css';
 
+// Number of days out at which an item starts showing a "warning" color.
+// Anything at or past its expiration date gets the stronger "alert" color.
+const WARNING_DAYS = 3;
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+function startOfToday() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+// Parse a YYYY-MM-DD string as local midnight. A bare date string would parse
+// as UTC and shift by a day for users west of UTC, so we append the time.
+function parseLocalDate(yyyyMmDd) {
+  const d = new Date(`${yyyyMmDd}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+// Classify an item's expiration date (YYYY-MM-DD) as 'alert', 'warning', or 'ok'.
+// Returns '' when exp is missing or unparseable so no class is applied.
+function expirationStatus(exp) {
+  const expDate = exp ? parseLocalDate(exp) : null;
+  if (!expDate) return '';
+
+  // Math.round (not floor) keeps the count accurate across DST transitions,
+  // where two local midnights can differ by 23 or 25 hours.
+  const daysUntilExpiration = Math.round((expDate - startOfToday()) / MS_PER_DAY);
+
+  if (daysUntilExpiration <= 0) return 'alert';
+  if (daysUntilExpiration <= WARNING_DAYS) return 'warning';
+  return 'ok';
+}
+
 function App() {
   // Items currently in the fridge inventory (loaded from GET /items).
   const [items, setItems] = useState([]);
@@ -47,11 +80,16 @@ function App() {
           ) : (
             <ul>
               {/* key={item.id} lets React efficiently update the list. */}
-              {items.map((item) => (
-                <li key={item.id}>
-                  <strong>{item.name}</strong> — {item.desc} (exp: {item.exp})
-                </li>
-              ))}
+              {items.map((item) => {
+                const status = expirationStatus(item.exp);
+                return (
+                  <li key={item.id} className={`item-${status}`}>
+                    <strong>{item.name}</strong> — {item.desc} (exp: {item.exp})
+                    {status === 'alert' && <span className="exp-badge"> expired</span>}
+                    {status === 'warning' && <span className="exp-badge"> expiring soon</span>}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
