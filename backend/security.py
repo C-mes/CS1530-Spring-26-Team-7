@@ -24,7 +24,7 @@ def validate_str(val, max_len, field):
         raise SecError(f"{field} empty")
     if len(val) > max_len:
         raise SecError(f"{field} too long, maximum = {max_len}")
-    return value
+    return val
 
 # Sanity checks for date inputs
 # TODO: check with integration conflicts due to ISO date format
