@@ -53,10 +53,12 @@ def validate_item(data):
         trusted["desc"] = validate_str(data.get("desc"),
                                           MAX_DESC_LEN,
                                           "desc")
-    if "exp" in data:
-        trusted["exp"] = validate_date(data.get("exp"),
-                                       MAX_DATE_LEN,
-                                       "exp")
+
+    # No need to validate exp, it is validated in the frontend and will be defaulted to today + 7 days if not provided                                     
+    # if "exp" in data:
+    #     trusted["exp"] = validate_date(data.get("exp"),
+    #                                    MAX_DATE_LEN,
+    #                                    "exp")
         
     if "amount" in data:
         trusted["amount"] = validate_amount(data.get("amount"),
