@@ -43,7 +43,10 @@ function App() {
   const [items, setItems] = useState([]);
   // Error message if the fetch fails (server down, network issue, etc.).
   const [error, setError] = useState(null);
-
+  // Text entered in the search bar to filter visible items.
+  const [searchQuery, setSearchQuery] = useState('');
+  // Controls sorting by expiration date.
+  const [sortOrder, setSortOrder] = useState('earliest');
   // Fetches the current item list from the backend and stores it in state.
   // Also passed to AddItem as a callback so the list refreshes after a POST.
   const loadItems = async () => {
@@ -62,6 +65,23 @@ function App() {
     loadItems();
   }, []);
 
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredItems = items.filter((item) => {
+    if (!normalizedQuery) return true;
+    return [item.name, item.desc, item.exp]
+      .filter(Boolean)
+      .some((value) => value.toLowerCase().includes(normalizedQuery));
+  });
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    const aDate = a.exp ? parseLocalDate(a.exp) : null;
+    const bDate = b.exp ? parseLocalDate(b.exp) : null;
+    const aTime = aDate ? aDate.getTime() : Number.POSITIVE_INFINITY;
+    const bTime = bDate ? bDate.getTime() : Number.POSITIVE_INFINITY;
+
+    if (sortOrder === 'latest') return bTime - aTime;
+    return aTime - bTime;
+  });
+
   return (
     <div className="App">
       <header className="App-header">
@@ -74,13 +94,44 @@ function App() {
 
         <section className="item-list">
           <h2>Items</h2>
+          <div className="item-controls">
+            <div className="control-group">
+              <label className="search-label" htmlFor="item-search">
+                Search items
+              </label>
+              <input
+                id="item-search"
+                className="item-search"
+                type="search"
+                placeholder="Search by name, description, or date"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="control-group">
+              <label className="sort-label" htmlFor="item-sort">
+                Sort by expiration date
+              </label>
+              <select
+                id="item-sort"
+                className="item-sort"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="earliest">Earliest date first</option>
+                <option value="latest">Latest date first</option>
+              </select>
+            </div>
+          </div>
           {error && <p className="status-err">{error}</p>}
           {items.length === 0 ? (
             <p>No items yet.</p>
+          ) : filteredItems.length === 0 ? (
+            <p>No matching items.</p>
           ) : (
             <ul>
               {/* key={item.id} lets React efficiently update the list. */}
-              {items.map((item) => {
+              {sortedItems.map((item) => {
                 const status = expirationStatus(item.exp);
                 return (
                   <li key={item.id} className={`item-${status}`}>
