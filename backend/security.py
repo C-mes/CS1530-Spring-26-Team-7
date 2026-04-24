@@ -45,11 +45,11 @@ def validate_item(data):
     trusted = {}
 
     if "name" in data:
-        trusted["name"] = validate_string(data.get("name"),
+        trusted["name"] = validate_str(data.get("name"),
                                           MAX_NAME_LEN,
                                           "name")
     if "desc" in data:
-        trusted["desc"] = validate_string(data.get("desc"),
+        trusted["desc"] = validate_str(data.get("desc"),
                                           MAX_DESC_LEN,
                                           "desc")
     if "exp" in data:
