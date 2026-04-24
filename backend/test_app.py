@@ -209,3 +209,151 @@ def test_delete_only_targets_specified_item(client):
     assert len(items) == 1
     assert items[0]['id'] == keep_id
     assert items[0]['name'] == 'Apple'
+
+def test_negative_amount_rejected(client):
+    response = client.post("/items", json={
+        "name": "Test Item",
+        "desc": "Test Desc",
+        "amount": -50,
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "amount cannot be negative" in response.get_data(as_text=True)
+
+def test_create_item_empty_name_rejected(client):
+    response = client.post("/items", json={
+        "name": "   ",
+        "desc": "Valid description",
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "name empty" in response.get_data(as_text=True)
+
+
+def test_create_item_non_string_name_rejected(client):
+    response = client.post("/items", json={
+        "name": 123,
+        "desc": "Valid description",
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "name not a string" in response.get_data(as_text=True)
+
+
+def test_create_item_name_too_long_rejected(client):
+    response = client.post("/items", json={
+        "name": "A" * 129,
+        "desc": "Valid description",
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "name too long" in response.get_data(as_text=True)
+
+
+def test_create_item_empty_desc_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "   ",
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "desc empty" in response.get_data(as_text=True)
+
+
+def test_create_item_non_string_desc_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": 123,
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "desc not a string" in response.get_data(as_text=True)
+
+
+def test_create_item_desc_too_long_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "A" * 513,
+        "exp": "2026-12-31"
+    })
+
+    assert response.status_code == 400
+    assert "desc too long" in response.get_data(as_text=True)
+
+
+def test_create_item_invalid_exp_format_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "Valid description",
+        "exp": "12/31/2026"
+    })
+
+    assert response.status_code == 400
+    assert "exp must be in ISO date format" in response.get_data(as_text=True)
+
+
+def test_create_item_non_string_exp_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "Valid description",
+        "exp": 20261231
+    })
+
+    assert response.status_code == 400
+    assert "exp not a string" in response.get_data(as_text=True)
+
+
+def test_create_item_amount_none_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "Valid description",
+        "exp": "2026-12-31",
+        "amount": None
+    })
+
+    assert response.status_code == 400
+    assert "amount is required" in response.get_data(as_text=True)
+
+
+def test_create_item_amount_not_number_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "Valid description",
+        "exp": "2026-12-31",
+        "amount": "not_a_number"
+    })
+
+    assert response.status_code == 400
+    assert "amount must be a number" in response.get_data(as_text=True)
+
+
+def test_create_item_negative_amount_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "Valid description",
+        "exp": "2026-12-31",
+        "amount": -50
+    })
+
+    assert response.status_code == 400
+    assert "amount cannot be negative" in response.get_data(as_text=True)
+
+
+def test_create_item_amount_too_large_rejected(client):
+    response = client.post("/items", json={
+        "name": "Valid name",
+        "desc": "Valid description",
+        "exp": "2026-12-31",
+        "amount": 1000001
+    })
+
+    assert response.status_code == 400
+    assert "amount too large" in response.get_data(as_text=True)
+
+    
