@@ -8,6 +8,7 @@ from datetime import datetime
 MAX_NAME_LEN = 128
 MAX_DESC_LEN = 512
 MAX_DATE_LEN = 64
+MAX_AMOUNT = 1000000
 
 # initialize this class
 class SecError(Exception):
@@ -53,7 +54,30 @@ def validate_item(data):
                                           MAX_DESC_LEN,
                                           "desc")
     if "exp" in data:
-        trusted["exp"] = validate_date(data.get("date"),
+        trusted["exp"] = validate_date(data.get("exp"),
                                        MAX_DATE_LEN,
                                        "exp")
+        
+    if "amount" in data:
+        trusted["amount"] = validate_amount(data.get("amount"),
+                                            "amount")
+                                            
     return trusted
+
+# Validating amount is not null, a float, and positive, and not above 
+def validate_amount(val, field="amount"):
+    if val is None:
+        raise SecError(f"{field} is required")
+
+    try:
+        amount = float(val)
+    except (TypeError, ValueError):
+        raise SecError(f"{field} must be a number")
+
+    if amount < 0:
+        raise SecError(f"{field} cannot be negative")
+
+    if amount > MAX_AMOUNT:
+        raise SecError(f"{field} too large, maximum = {MAX_AMOUNT}")
+
+    return amount
