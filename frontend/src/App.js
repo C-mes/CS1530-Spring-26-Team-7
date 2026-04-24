@@ -51,7 +51,7 @@ function App() {
   // Also passed to AddItem as a callback so the list refreshes after a POST.
   const loadItems = async () => {
     try {
-      const res = await fetch('http://localhost:5001/items');
+      const res = await fetch('http://localhost:5000/items');
       if (!res.ok) throw new Error(`Error ${res.status}`);
       setItems(await res.json());
     } catch (err) {
