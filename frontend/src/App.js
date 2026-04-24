@@ -51,7 +51,7 @@ function App() {
   // Also passed to AddItem as a callback so the list refreshes after a POST.
   const loadItems = async () => {
     try {
-      const res = await fetch('http://localhost:5000/items');
+      const res = await fetch('http://localhost:5001/items');
       if (!res.ok) throw new Error(`Error ${res.status}`);
       setItems(await res.json());
     } catch (err) {
@@ -85,10 +85,13 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Fridge App</h1>
+        <div className="header-content">
+          <h1>Fridge App</h1>
+          <p>Track inventory, search quickly, and spot expiring items on any screen size.</p>
+        </div>
       </header>
 
-      <main>
+      <main className="app-main">
         {/* Pass loadItems down so AddItem can trigger a refresh after adding. */}
         <AddItem onAdded={loadItems} />
 
@@ -135,9 +138,17 @@ function App() {
                 const status = expirationStatus(item.exp);
                 return (
                   <li key={item.id} className={`item-${status}`}>
-                    <strong>{item.name}</strong> — {item.desc} (exp: {item.exp})
-                    {status === 'alert' && <span className="exp-badge"> expired</span>}
-                    {status === 'warning' && <span className="exp-badge"> expiring soon</span>}
+                    <div className="item-row">
+                      <div className="item-copy">
+                        <strong>{item.name}</strong>
+                        <span>{item.desc}</span>
+                      </div>
+                      <div className="item-meta">
+                        <span className="item-date">exp: {item.exp}</span>
+                        {status === 'alert' && <span className="exp-badge">expired</span>}
+                        {status === 'warning' && <span className="exp-badge">expiring soon</span>}
+                      </div>
+                    </div>
                   </li>
                 );
               })}
