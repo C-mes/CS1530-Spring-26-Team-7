@@ -59,6 +59,20 @@ function App() {
     }
   };
 
+  //add delete function
+  const deleteItem = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/items/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        loadItems(); // Reload the list after deleting
+      }
+    } catch (err) {
+      setError('Could not delete item');
+    }
+  };
+
   // Run loadItems once when the component first mounts.
   // Empty dependency array = "only on mount", not on every re-render.
   useEffect(() => {
@@ -147,6 +161,7 @@ function App() {
                         <span className="item-date">exp: {item.exp}</span>
                         {status === 'alert' && <span className="exp-badge">expired</span>}
                         {status === 'warning' && <span className="exp-badge">expiring soon</span>}
+                        <button onClick={() => deleteItem(item.id)} className="delete-btn">Delete</button>
                       </div>
                     </div>
                   </li>
