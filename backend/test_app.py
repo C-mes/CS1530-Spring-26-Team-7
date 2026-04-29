@@ -211,6 +211,8 @@ def test_delete_only_targets_specified_item(client):
     assert items[0]['name'] == 'Apple'
 
 def test_negative_amount_rejected(client):
+    # CREATE — validation: negative `amount` values must be rejected
+    # with a 400 error to prevent invalid financial data from being stored.
     response = client.post("/items", json={
         "name": "Test Item",
         "desc": "Test Desc",
@@ -222,6 +224,8 @@ def test_negative_amount_rejected(client):
     assert "amount cannot be negative" in response.get_data(as_text=True)
 
 def test_create_item_empty_name_rejected(client):
+    # CREATE — validation: `name` cannot be empty or whitespace-only;
+    # ensures basic data integrity for required string fields.
     response = client.post("/items", json={
         "name": "   ",
         "desc": "Valid description",
@@ -233,6 +237,8 @@ def test_create_item_empty_name_rejected(client):
 
 
 def test_create_item_non_string_name_rejected(client):
+    # CREATE — validation: `name` must be a string; rejects invalid
+    # types to avoid downstream type errors and malformed data.
     response = client.post("/items", json={
         "name": 123,
         "desc": "Valid description",
@@ -244,6 +250,8 @@ def test_create_item_non_string_name_rejected(client):
 
 
 def test_create_item_name_too_long_rejected(client):
+    # CREATE — validation: `name` must respect the max length constraint
+    # (128 chars); guards against oversized inputs and schema violations.
     response = client.post("/items", json={
         "name": "A" * 129,
         "desc": "Valid description",
@@ -255,6 +263,8 @@ def test_create_item_name_too_long_rejected(client):
 
 
 def test_create_item_empty_desc_rejected(client):
+    # CREATE — validation: `desc` cannot be empty or whitespace-only;
+    # enforces required descriptive content for each item.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "   ",
@@ -266,6 +276,8 @@ def test_create_item_empty_desc_rejected(client):
 
 
 def test_create_item_non_string_desc_rejected(client):
+    # CREATE — validation: `desc` must be a string; prevents invalid
+    # types from being stored in text fields.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": 123,
@@ -277,6 +289,8 @@ def test_create_item_non_string_desc_rejected(client):
 
 
 def test_create_item_desc_too_long_rejected(client):
+    # CREATE — validation: `desc` must not exceed max length (512 chars);
+    # protects against excessively large payloads.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "A" * 513,
@@ -288,6 +302,8 @@ def test_create_item_desc_too_long_rejected(client):
 
 
 def test_create_item_invalid_exp_format_rejected(client):
+    # CREATE — validation: `exp` must follow ISO date format (YYYY-MM-DD);
+    # rejects alternative formats to maintain consistency.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "Valid description",
@@ -299,6 +315,8 @@ def test_create_item_invalid_exp_format_rejected(client):
 
 
 def test_create_item_non_string_exp_rejected(client):
+    # CREATE — validation: `exp` must be a string; ensures proper parsing
+    # and prevents runtime errors during date validation.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "Valid description",
@@ -310,6 +328,8 @@ def test_create_item_non_string_exp_rejected(client):
 
 
 def test_create_item_amount_none_rejected(client):
+    # CREATE — validation: `amount` is required and cannot be null;
+    # enforces completeness of numeric data.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "Valid description",
@@ -322,6 +342,8 @@ def test_create_item_amount_none_rejected(client):
 
 
 def test_create_item_amount_not_number_rejected(client):
+    # CREATE — validation: `amount` must be numeric; rejects strings
+    # and other invalid types to ensure arithmetic correctness.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "Valid description",
@@ -334,6 +356,8 @@ def test_create_item_amount_not_number_rejected(client):
 
 
 def test_create_item_negative_amount_rejected(client):
+    # CREATE — validation: `amount` must be non-negative; prevents
+    # logically invalid values from entering the system.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "Valid description",
@@ -346,6 +370,8 @@ def test_create_item_negative_amount_rejected(client):
 
 
 def test_create_item_amount_too_large_rejected(client):
+    # CREATE — validation: `amount` must not exceed the maximum allowed
+    # threshold (1,000,000); guards against overflow and unrealistic values.
     response = client.post("/items", json={
         "name": "Valid name",
         "desc": "Valid description",
