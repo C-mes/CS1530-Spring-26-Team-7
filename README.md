@@ -72,7 +72,14 @@ What it does:
 How to use it:
 - Open the main page and scroll to the `Items` section.
 - Each saved entry appears with its name, description, and expiration date.
+  
+### Delete item
+What it does:
+- Lets the user remove an existing inventory entry.
 
+How to use it:
+- Click the delete button next to an item in the inventory list.
+  
 ### Search items
 What it does:
 - Filters the visible inventory list by matching the search text against item names and/or descriptions.
