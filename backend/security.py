@@ -31,6 +31,8 @@ def validate_str(val, max_len, field):
 # TODO: check with integration conflicts due to ISO date format
 # requirement
 def validate_date(val, max_len, field="exp"):
+    if val == "":
+        return None # exp is optional, default to 7 days in backend if not provided
     validate_str(val, max_len, field)
     try:
         datetime.fromisoformat(val)
@@ -55,10 +57,10 @@ def validate_item(data):
                                           "desc")
 
     # No need to validate exp, it is validated in the frontend and will be defaulted to today + 7 days if not provided                                     
-    # if "exp" in data:
-    #     trusted["exp"] = validate_date(data.get("exp"),
-    #                                    MAX_DATE_LEN,
-    #                                    "exp")
+    if "exp" in data:
+        trusted["exp"] = validate_date(data.get("exp"),
+                                       MAX_DATE_LEN,
+                                       "exp")
         
     if "amount" in data:
         trusted["amount"] = validate_amount(data.get("amount"),
